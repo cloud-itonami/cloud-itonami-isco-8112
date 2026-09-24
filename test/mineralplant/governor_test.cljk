@@ -1,5 +1,5 @@
 (ns mineralplant.governor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [mineralplant.store :as store]
             [mineralplant.advisor :as advisor]
             [mineralplant.governor :as governor]))
