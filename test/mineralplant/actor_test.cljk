@@ -1,5 +1,5 @@
 (ns mineralplant.actor-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [mineralplant.actor :as actor]
             [mineralplant.store :as store]))
 
