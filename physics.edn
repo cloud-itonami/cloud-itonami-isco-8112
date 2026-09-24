@@ -1,0 +1,35 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:physics` runs it.
+;;
+;; README "Robotics premise": a plant scheduling/logistics coordination robot
+;; schedules a crushing/grinding/screening plant crew, logs production runs and
+;; inventory and coordinates raw-material/spare-parts supply; it never operates
+;; plant equipment. Its physical work is plant logistics: moving heavy spare
+;; parts (crusher liners, screen panels) to the maintenance bay, and the dust
+;; suppression water supply that a run cannot start without.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isco-8112"
+ :cases
+ [{:id :liner-to-maintenance-bay
+   :kind :transport
+   :procedure "heavy-duty AMR carries crusher liner plates / screen panels from the spares store to the maintenance bay"
+   :params {:mass-kg 400.0 :distance-m 120.0 :v-max-mps 1.0 :a-max-mps2 0.3
+            :brake-decel-mps2 0.8 :drive-force-n 900.0 :crr 0.03
+            :cog-height-m 0.40 :payload-cog-height-m 0.60 :support-half-length-m 0.60
+            :max-time-s 1800.0}
+   :sweep {:param :payload-kg :values [200.0 500.0 1000.0 1500.0 2000.0]}
+   :quantity :cycle-time-s
+   :limit {:max 150.0 :basis "estimate: one spares delivery within the 2.5-minute slot of a planned liner change"}
+   :boundary {:lo 100.0 :hi 3000.0}}
+  {:id :dust-suppression-water
+   :kind :pipe-flow
+   :procedure "dust-suppression spray header is fed through 60 m of 25 mm hose up 15 m to the crusher feed"
+   :params {:diameter-m 0.025 :length-m 60.0 :roughness-m 1.5e-6 :density-kg-m3 998.0
+            :viscosity-pa-s 1.0e-3 :pump-efficiency 0.6 :elevation-m 15.0}
+   :sweep {:param :q-m3s :values [0.0005 0.001 0.0015 0.002 0.003]}
+   :quantity :pressure-drop-pa
+   :limit {:max 600000.0 :basis "estimate: 6 bar available from the plant water ring main"}
+   :boundary {:lo 0.0002 :hi 0.005}}]}
